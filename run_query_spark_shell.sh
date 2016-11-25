@@ -6,4 +6,4 @@ fi
 touch tmp.py
 cat ./queryPreamble.py >> tmp.py
 cat ./queries/query$QUERYID.py >> tmp.py
-$SPARKSHELLPATH tmp.py
+pyspark tmp.py

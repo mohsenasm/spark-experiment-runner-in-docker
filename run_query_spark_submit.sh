@@ -12,4 +12,4 @@ fi
 touch tmp.py
 cat ./queryPreamble.py >> tmp.py
 cat ./queries/query$QUERYID.py >> tmp.py
-$SPARK_SUBMIT_PATH --master $MASTER --executor-memory $MEMORY_EXECUTOR --driver-memory $DRIVER_MEM --num-executors $N_EXECUTORS tmp.py
+spark-submit --master $MASTER --executor-memory $MEMORY_EXECUTOR --driver-memory $DRIVER_MEM --num-executors $N_EXECUTORS tmp.py
