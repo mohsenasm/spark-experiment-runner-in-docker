@@ -34,7 +34,7 @@ function executeQuery {
   touch tmp.py
   cat ./queryPreamble.py >> tmp.py
   cat ./queries/query$1.py >> tmp.py
-  ${SPARK_HOME}/bin/spark-submit --master ${MASTER} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --num-executors ${N_EXECUTORS} tmp.py
+  ${SPARK_HOME}/spark-submit --master ${MASTER} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --num-executors ${N_EXECUTORS} tmp.py
 }
 #Entry Point
 ./conf.sh
