@@ -28,9 +28,13 @@ function executeQuery {
   fi
   touch tmp.py
   cat ./queryPreamble.py >> tmp.py
-  cat ./queries/query${$1}.py >> tmp.py
+  cat ./queries/query$1.py >> tmp.py
   pyspark tmp.py
 }
+if [ "$#" -gt 1 ]
+then
+  echo "Warning: only one argument is supported, the others will be ignored"
+fi
 checkargs $1
 if [ $ALL_QUERIES -eq 1 ]
 then

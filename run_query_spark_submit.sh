@@ -33,9 +33,14 @@ function executeQuery {
   fi
   touch tmp.py
   cat ./queryPreamble.py >> tmp.py
-  cat ./queries/query${$1}.py >> tmp.py
+  cat ./queries/query$1.py >> tmp.py
   spark-submit --master ${MASTER} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --num-executors ${N_EXECUTORS} tmp.py
 }
+#Entry Point
+if [ "$#" -gt 1 ]
+then
+  echo "Warning: only one argument is supported, the others will be ignored"
+fi
 checkargs $1
 if [ $ALL_QUERIES -eq 1 ]
 then
