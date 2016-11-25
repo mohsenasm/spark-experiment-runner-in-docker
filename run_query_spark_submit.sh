@@ -37,7 +37,7 @@ function executeQuery {
   ${SPARK-HOME} --master ${MASTER} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --num-executors ${N_EXECUTORS} tmp.py
 }
 #Entry Point
-./config.sh
+./conf.sh
 if [ "$#" -gt 1 ]
 then
   echo "Warning: only one argument is supported, the others will be ignored"
