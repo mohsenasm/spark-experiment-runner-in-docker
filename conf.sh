@@ -1,1 +1,1 @@
-export $SPARK-HOME="/usr/hdp/current/spark-client/bin"
+export $SPARK_HOME="/usr/hdp/current/spark-client/bin"
