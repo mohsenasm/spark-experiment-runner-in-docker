@@ -3,10 +3,11 @@ ALLOWEDIDS=(19 20 21 26 40 52 55 "-A")
 LENGTH=${#ALLOWEDIDS[@]}
 ALL_QUERIES=0
 QUERYID=$1
-MASTER="yarn-master"
-N_EXECUTORS=1
-MEMORY_EXECUTOR="512m"
-DRIVER_MEM="512m"
+MASTER="hdinsightcluster@mystoragecluster.blob.core.windows.net"
+DEPLOY="cluster"
+N_EXECUTORS=12
+MEMORY_EXECUTOR="1024m"
+DRIVER_MEM="1024m"
 
 function checkargs {
   RESULT=0
@@ -35,7 +36,7 @@ function executeQuery {
   touch tmp.py
   cat ./queryPreamble.py >> tmp.py
   cat ./queries/query$1.py >> tmp.py
-  ${SPARK_HOME}/bin/spark-submit --master ${MASTER} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --num-executors ${N_EXECUTORS} tmp.py
+  ${SPARK_HOME}/bin/spark-submit --master ${MASTER} --deploy-mode ${DEPLOY} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --num-executors ${N_EXECUTORS} tmp.py
 }
 #Entry Point
 if [ "$#" -gt 1 ]
