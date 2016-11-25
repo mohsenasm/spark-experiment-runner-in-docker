@@ -3,9 +3,9 @@ ALLOWEDIDS=(19 20 21 26 40 52 55 "-A")
 LENGTH=${#ALLOWEDIDS[@]}
 ALL_QUERIES=0
 QUERYID=$1
-MASTER="hdinsightcluster@mystoragecluster.blob.core.windows.net"
-DEPLOY="cluster"
-N_EXECUTORS=12
+MASTER="yarn"
+DEPLOY="client"
+N_EXECUTORS=4
 MEMORY_EXECUTOR="1024m"
 DRIVER_MEM="1024m"
 
@@ -39,6 +39,11 @@ function executeQuery {
   ${SPARK_HOME}/bin/spark-submit --master ${MASTER} --deploy-mode ${DEPLOY} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --num-executors ${N_EXECUTORS} tmp.py
 }
 #Entry Point
+if [ $# -eq 0 ]
+then
+  echo "No arguments supplied"
+  exit -1;
+fi
 if [ "$#" -gt 1 ]
 then
   echo "Warning: only one argument is supported, the others will be ignored"

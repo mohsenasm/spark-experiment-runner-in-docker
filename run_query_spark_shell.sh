@@ -31,7 +31,12 @@ function executeQuery {
   cat ./queries/query$1.py >> tmp.py
   pyspark tmp.py
 }
-if [ "$#" -gt 1 ]
+if [ $# -eq 0 ]
+then
+  echo "No arguments supplied"
+  exit -1;
+fi
+if [ $# -gt 1 ]
 then
   echo "Warning: only one argument is supported, the others will be ignored"
 fi
