@@ -1,6 +1,7 @@
 #!/bin/sh
 
-## Copyright 2015 Eugenio Gianniti
+## Copyright 2016 Giorgio Pea <giorgio.pea@mail.polimi.it>
+## From a work of Eugenio Gianniti
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -14,15 +15,17 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-if [ $# -lt 1 ]; then
-  echo "setup.sh: too few input arguments" 1>&2
-  exit 1
+source ../config.sh
+function isNumber {
+  re='^[0-9]+$'
+  if ! [[ $1 =~ $re ]] ; then
+     echo "error: Scale factor in config file is not an integer number" >&2; exit 1
+  fi
+}
+if [ $# -gt 0 ]; then
+  echo "setup.sh: This script takes no arguments, therefore they will be ignored"
 fi
-
-isnumber() { test "$1" && printf '%d' "$1" > /dev/null 2>&1; }
-
-isnumber "$1" || ( echo "setup.sh: an integer is needed as SCALE" >&2; exit 2 )
-SCALE=$(printf '%d' "$1")
+isNumber $SCALE
 
 SOURCE="$0"
 while [ -L "$SOURCE" ]; do
