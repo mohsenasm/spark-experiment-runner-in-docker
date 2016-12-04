@@ -1,5 +1,5 @@
-from pyspark import SparkContextfrom pyspark.sql import HiveContextsc = SparkContext(appName="HiveQuery")
-hive_context = HiveContext(sc)scale=2
+from pyspark import SparkContextfrom pyspark.sql import HiveContextimport ossc = SparkContext(appName="HiveQuery")
+hive_context = HiveContext(sc)#Gets scale factor from config.sh, defaults to 2scale= os.getenv("SCALE",2)
 call_center = hive_context.table("tpcds_text_"+str(scale)+".call_center")
 catalog_page = hive_context.table("tpcds_text_"+str(scale)+".catalog_page")
 catalog_returns = hive_context.table("tpcds_text_"+str(scale)+".catalog_returns")

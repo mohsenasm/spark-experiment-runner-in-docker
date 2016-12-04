@@ -1,4 +1,4 @@
-ALLOWEDIDS=(19 20 21 26 40 52 55 "-A")
+source ./config.sh
 LENGTH=${#ALLOWEDIDS[@]}
 ALL_QUERIES=0
 
@@ -29,7 +29,7 @@ function executeQuery {
   touch tmp.py
   cat ./queryPreamble.py >> tmp.py
   cat ./queries/query$1.py >> tmp.py
-  pyspark tmp.py
+  ${PYSPARK}/bin/pyspark tmp.py
 }
 if [ $# -eq 0 ]
 then
