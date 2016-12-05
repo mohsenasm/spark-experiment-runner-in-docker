@@ -63,8 +63,9 @@ function executeQuery {
   APP_ID=$(cat app_id.txt | grep -m 1 -Po "application_([0-9])+_([0-9])")
   mv app_id.txt spark_outputs/${APP_ID}.txt
   echo "EXECUTION FINISHED"
+  echo "APP ID: ${APP_ID}"
   echo "DOWNLOADING LOGS"
-  ./logDownload.sh ${APP_ID}
+  ./logDownload.sh -s ${HISTORY_SERVER_IP} ${APP_ID}
   echo "DOWNLOAD COMPLETED"
 }
 if [ $# -eq 0 ]
