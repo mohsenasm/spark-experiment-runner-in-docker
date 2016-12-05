@@ -1,0 +1,4 @@
+echo "STARTING DELETING /usr/ubuntu"
+hdfs -dfs -rm -r -skipTrash /usr/ubuntu
+echo "STARTING DELETING /tmp/ubuntu"
+hdfs -dfs -rm -r -skiptTrash /tmp/ubuntu
