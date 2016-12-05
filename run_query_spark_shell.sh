@@ -15,7 +15,14 @@
 source ./config.sh
 LENGTH=${#ALLOWEDIDS[@]}
 ALL_QUERIES=0
+REPETITIONS_N=1
 
+function isNumber {
+  re='^[0-9]+$'
+  if ! [[ $1 =~ $re ]] ; then
+     echo "Error: Scale factor in config file or Repetition factor is not an integer number" >&2; exit 1
+  fi
+}
 function checkargs {
   RESULT=0
   for i in "${ALLOWEDIDS[@]}"
@@ -33,6 +40,12 @@ function checkargs {
   if [ $1 = "-A" ]
   then
     ALL_QUERIES=1
+  else
+    if ! [ -z $2 ]
+    then
+      isNumber $2
+      REPETITIONS_N=$2
+    fi
   fi
 }
 function executeQuery {
@@ -43,18 +56,18 @@ function executeQuery {
   touch tmp.py
   cat ./queryPreamble.py >> tmp.py
   cat ./queries/query$1.py >> tmp.py
-  ${PYSPARK}/bin/pyspark tmp.py
+  ${PYSPARK}/pyspark tmp.py
 }
 if [ $# -eq 0 ]
 then
-  echo "No arguments supplied"
+  echo "Error: usage is [QUERY_ID | -A FOR EXECUTE ALL] ?[N_TIMES]"
   exit -1;
 fi
-if [ $# -gt 1 ]
+if [ $# -gt 2 ]
 then
   echo "Warning: only one argument is supported, the others will be ignored"
 fi
-checkargs $1
+checkargs $1 $2
 if [ $ALL_QUERIES -eq 1 ]
 then
   for i in $(seq 0 $(expr $LENGTH - 2))
@@ -62,5 +75,8 @@ then
     executeQuery ${ALLOWEDIDS[$i]}
   done
 else
-  executeQuery $1
+  for j in in $(seq 1 REPETITIONS_N=1)
+  do
+    executeQuery $1
+  done
 fi
