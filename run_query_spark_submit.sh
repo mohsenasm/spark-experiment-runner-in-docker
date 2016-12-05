@@ -45,7 +45,7 @@ function executeQuery {
   touch tmp.py
   cat ./queryPreamble.py >> tmp.py
   cat ./queries/query$1.py >> tmp.py
-  ${SPARK_HOME}/bin/spark-submit --master ${MASTER} --deploy-mode ${DEPLOY} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --num-executors ${N_EXECUTORS} tmp.py
+  ${SPARK_HOME}/bin/spark-submit --master ${MASTER} --deploy-mode ${DEPLOY} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --num-executors ${N_EXECUTORS} --executor-cores ${EXECUTOR_CORES} tmp.py
 }
 #Entry Point
 if [ $# -eq 0 ]
