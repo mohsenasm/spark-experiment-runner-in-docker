@@ -64,9 +64,7 @@ function executeQuery {
   mv app_id.txt spark_outputs/${APP_ID}.txt
   echo "EXECUTION FINISHED"
   echo "DOWNLOADING LOGS"
-  ENDPOINT="http://${HISTORY_SERVER_IP}:18080/api/v1/applications/${appId}/logs"
-  OUTFILE="./logs/log${APP_ID}.zip"
-  curl -# "$ENDPOINT" -o "$OUTFILE"
+  ./logDownload.sh ${APP_ID}
   echo "DOWNLOAD COMPLETED"
 }
 if [ $# -eq 0 ]
