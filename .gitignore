@@ -88,7 +88,11 @@ ENV/
 # Rope project settings
 .ropeproject
 
+#Intermediate and output files
 tmp.py
+app_id.txt
+logs/*
+!logs/.gitkeep
 
 
 # Created by https://www.gitignore.io/api/macos
