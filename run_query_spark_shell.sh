@@ -17,6 +17,8 @@ LENGTH=${#ALLOWEDIDS[@]}
 ALL_QUERIES=0
 REPETITIONS_N=1
 APP_ID=""
+ENDPOINT=""
+OUTFILE=""
 
 function isNumber {
   re='^[0-9]+$'
@@ -62,7 +64,9 @@ function executeQuery {
   mv app_id.txt spark_outputs/${APP_ID}.txt
   echo "EXECUTION FINISHED"
   echo "DOWNLOADING LOGS"
-  ./logDownload.sh -s ${HISTORY_SERVER_IP} ${APP_ID}
+  ENDPOINT="http://${HISTORY_SERVER_IP}:18080/api/v1/applications/${appId}/logs"
+  OUTFILE="./logs/log${APP_ID}.zip"
+  curl -# "$ENDPOINT" -o "$OUTFILE"
   echo "DOWNLOAD COMPLETED"
 }
 if [ $# -eq 0 ]

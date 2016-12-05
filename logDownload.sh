@@ -1,5 +1,3 @@
-source ./config.sh
-
 error_aux ()
 {
     echo "$0: $1: $2" >&2
