@@ -62,7 +62,7 @@ function executeQuery {
   mv app_id.txt spark_outputs/${APP_ID}.txt
   echo "EXECUTION FINISHED"
   echo "DOWNLOADING LOGS"
-  ./logDownload.sh ${APP_ID}
+  ./logDownload.sh -s ${HISTORY_SERVER_IP} ${APP_ID}
   echo "DOWNLOAD COMPLETED"
 }
 #Entry Point
