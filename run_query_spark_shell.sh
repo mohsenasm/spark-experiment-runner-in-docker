@@ -57,8 +57,9 @@ function executeQuery {
   touch tmp.py
   cat ./queryPreamble.py >> tmp.py
   cat ./queries/query$1.py >> tmp.py
-  APP_ID=$(${PYSPARK}/pyspark tmp.py | grep -m1 "/application_([0-9])+_([0-9])+/")
-  echo ${APP_ID}
+  ${PYSPARK}/pyspark tmp.py &> app_id.txt
+  APP_ID = $(cat app_id.txt | grep -m 1 -Po "application_([0-9])+_([0-9])")
+  rm app_id.txt
   echo "EXECUTION FINISHED"
   echo "DOWNLOADING LOGS"
   ./logDownload.sh APP_ID
