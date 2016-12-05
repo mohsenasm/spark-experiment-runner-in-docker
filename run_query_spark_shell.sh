@@ -56,7 +56,7 @@ function executeQuery {
   touch tmp.py
   cat ./queryPreamble.py >> tmp.py
   cat ./queries/query$1.py >> tmp.py
-  ${PYSPARK}/pyspark tmp.py
+  ${PYSPARK}/pyspark tmp.py | grep "\\application_([0-9])+_([0-9])+\\" > tmp.txt
 }
 if [ $# -eq 0 ]
 then
