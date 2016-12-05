@@ -31,3 +31,5 @@ DRIVER_MEM="1024m"
 ALLOWEDIDS=(19 20 21 26 40 52 55 "-A")
 #Spark History server ip
 HISTORY_SERVER_IP="localhost"
+#Waiting for download log
+WAIT_LOG="20s"

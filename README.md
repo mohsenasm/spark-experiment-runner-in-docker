@@ -9,3 +9,5 @@ and configured. This repo is tested only with Python 2.7
 2. Run a specific query K times by using ```run_query_spark_shell.sh [QUERY_ID] ?[N_OF_REPETITIONS]```
 or ```run_query_spark_submit.sh [QUERY_ID] ?[N_OF_REPETITIONS]```.
 4. Run all queries by using ```run_query_spark_shell.sh -A``` or ```run_query_spark_submit.sh -A```
+5. The output of the each run is saved in .txt format inside the ```spark_outputs``` folder
+6. The log of each run is saved in .zip format inside the ```logs``` folder

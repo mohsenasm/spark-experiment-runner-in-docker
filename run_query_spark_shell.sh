@@ -64,7 +64,7 @@ function executeQuery {
   mv app_id.txt spark_outputs/${APP_ID}.txt
   echo "EXECUTION FINISHED"
   echo "APP ID: ${APP_ID}"
-  sleep 5s
+  sleep ${WAIT_LOG}
   echo "DOWNLOADING LOGS"
   ./logDownload.sh -s ${HISTORY_SERVER_IP} ${APP_ID}
   echo "DOWNLOAD COMPLETED"
