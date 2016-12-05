@@ -1,5 +1,6 @@
 # TPCDS
 [![Code Climate](https://codeclimate.com/github/DeadManPoe/TPCDS/badges/gpa.svg)](https://codeclimate.com/github/DeadManPoe/TPCDS)
+
 This repo supposes you have Hadoop, Spark, Hive, Hdfs and Yarn correctly installed
 and configured. This repo is tested only with Python 2.7
 
