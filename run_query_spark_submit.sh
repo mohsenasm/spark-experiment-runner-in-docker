@@ -1,5 +1,3 @@
-#!/bin/sh
-
 ## Copyright 2016 Giorgio Pea <giorgio.pea@mail.polimi.it>
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
