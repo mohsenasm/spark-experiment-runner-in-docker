@@ -30,4 +30,4 @@ DRIVER_MEM="1024m"
 #Available queries id + -A to indicate that all queries must be executed
 ALLOWEDIDS=(19 20 21 26 40 52 55 "-A")
 #Spark History server ip
-HISTORY_SERVER_IP=""
+HISTORY_SERVER_IP="localhost:18080"
