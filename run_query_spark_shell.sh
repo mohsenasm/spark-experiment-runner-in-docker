@@ -72,11 +72,13 @@ if [ $ALL_QUERIES -eq 1 ]
 then
   for i in $(seq 0 $(expr $LENGTH - 2))
   do
+    echo "EXECUTING QUERY ${ALLOWEDIDS[$i]}"
     executeQuery ${ALLOWEDIDS[$i]}
   done
 else
   for j in $(seq 1 ${REPETITIONS_N})
   do
+    echo "EXECUTING QUERY $1, REPETITION $j"
     executeQuery $1
   done
 fi

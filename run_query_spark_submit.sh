@@ -57,6 +57,7 @@ function executeQuery {
   cat ./queryPreamble.py >> tmp.py
   cat ./queries/query$1.py >> tmp.py
   ${SPARK_HOME}/bin/spark-submit --master ${MASTER} --deploy-mode ${DEPLOY} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --num-executors ${N_EXECUTORS} --executor-cores ${EXECUTOR_CORES} tmp.py
+  echo "EXECUTION FINISHED"
 }
 #Entry Point
 if [ $# -eq 0 ]
@@ -73,11 +74,13 @@ if [ $ALL_QUERIES -eq 1 ]
 then
   for i in $(seq 0 $(expr $LENGTH - 2))
   do
+    echo "EXECUTING QUERY ${ALLOWEDIDS[$i]}"
     executeQuery ${ALLOWEDIDS[$i]}
   done
 else
   for j in $(seq 1 ${REPETITIONS_N})
   do
+    echo "EXECUTING QUERY $1, REPETITION $j"
     executeQuery $1
   done
 fi
