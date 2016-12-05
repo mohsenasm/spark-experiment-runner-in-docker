@@ -76,7 +76,7 @@ then
     executeQuery ${ALLOWEDIDS[$i]}
   done
 else
-  for j in in $(seq 1 REPETITIONS_N=1)
+  for j in $(seq 1 ${REPETITIONS_N})
   do
     executeQuery $1
   done
