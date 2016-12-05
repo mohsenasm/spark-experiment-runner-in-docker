@@ -59,7 +59,7 @@ function executeQuery {
   cat ./queries/query$1.py >> tmp.py
   ${SPARK_HOME}/bin/spark-submit --master ${MASTER} --deploy-mode ${DEPLOY} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --num-executors ${N_EXECUTORS} --executor-cores ${EXECUTOR_CORES} tmp.py &> app_id.txt
   APP_ID = $(cat app_id.txt | grep -m 1 -Po "application_([0-9]+)_([0-9]+)"))
-  rm app_id.txt
+  mv app_id.txt spark_outputs/${APP_ID}.txt
   echo "EXECUTION FINISHED"
   echo "DOWNLOADING LOGS"
   ./logDownload.sh APP_ID

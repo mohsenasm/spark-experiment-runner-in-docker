@@ -93,6 +93,8 @@ tmp.py
 app_id.txt
 logs/*
 !logs/.gitkeep
+spark_outputs/*
+!spark_outputs/.gitkeep
 
 
 # Created by https://www.gitignore.io/api/macos
