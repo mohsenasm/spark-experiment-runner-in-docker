@@ -1,5 +1,3 @@
-#!/bin/sh
-
 ## Copyright 2016 Giorgio Pea <giorgio.pea@mail.polimi.it>
 ## From a work of Eugenio Gianniti
 ##
