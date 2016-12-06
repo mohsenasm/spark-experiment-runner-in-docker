@@ -59,7 +59,7 @@ function executeQuery {
   touch tmp.py
   cat ./queryPreamble.py >> tmp.py
   cat ./queries/query$1.py >> tmp.py
-  ${PYSPARK}/pyspark tmp.py --deploy-mode ${DEPLOY} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --master ${MASTER} --num-executors ${N_EXECUTORS} --executor-cores ${EXECUTOR_CORES} | tee app_id.txt
+  ${PYSPARK}/pyspark tmp.py --deploy-mode ${DEPLOY} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --master ${MASTER} --num-executors ${N_EXECUTORS} --executor-cores ${EXECUTOR_CORES} &> app_id.txt
   APP_ID=$(cat app_id.txt | grep -m 1 -Po "application_([0-9])+_([0-9])")
   mv app_id.txt spark_outputs/${APP_ID}.txt
   echo "EXECUTION FINISHED"
