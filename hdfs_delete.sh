@@ -1,4 +1,7 @@
-echo "STARTING DELETING /user/ubuntu"
-hdfs -dfs -rm -r -skipTrash /user/ubuntu
-echo "STARTING DELETING /tmp/ubuntu"
-hdfs -dfs -rm -r -skiptTrash /tmp/ubuntu
+if [ $# -ne 1 ]
+then
+  echo "Error: usage is [TPCDS_DATASET_SCALE]"
+  exit -1;
+fi
+echo "STARTING DELETING /tmp/tpcds-generate/"$1
+hdfs dfs -rm  -R -skipTrash /tmp/tpcds-generate/$1
