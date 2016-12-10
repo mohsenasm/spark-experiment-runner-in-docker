@@ -2,7 +2,8 @@
 [![Code Climate](https://codeclimate.com/github/DeadManPoe/TPCDS/badges/gpa.svg)](https://codeclimate.com/github/DeadManPoe/TPCDS)
 
 This repo supposes you have Hadoop, Spark, Hive, Hdfs and Yarn correctly installed
-and configured. This repo is tested only with Python 2.7
+and configured. This repo is tested only with Python 2.7. Most of the shell scripts
+in this repo require bash.
 
 1. Edit the ```config.sh``` file to set parameters for Spark Submit, PySpark and TPCDS benchmark data generation
 1. Generate the TCPDS benchmark data using ```setup.sh``` in the ```gen_data``` folder

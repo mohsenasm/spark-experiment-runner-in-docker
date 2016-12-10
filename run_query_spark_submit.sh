@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ## Copyright 2016 Giorgio Pea <giorgio.pea@mail.polimi.it>
 ##
@@ -14,7 +14,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-. config.sh
+source ./config.sh
 LENGTH=${#ALLOWEDIDS[@]}
 ALL_QUERIES=0
 REPETITIONS_N=1
