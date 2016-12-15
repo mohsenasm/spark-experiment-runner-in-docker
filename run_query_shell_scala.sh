@@ -46,9 +46,6 @@ function checkargs {
   if [ $1 = "-A" ]
   then
     ALL_QUERIES=1
-  else if [$1 = "-F"]
-  then
-    FROM_FILE=1
   else
     if ! [ -z $2 ]
     then
@@ -68,7 +65,7 @@ function executeQuery {
   cat ./queryPreamble.py >> tmp.py
   cat ./queries/query$1.py >> tmp.py
   ## Executes pyspark with stdout/stderr redirect to app_id.txt
-  ${PYSPARK}/pyspark tmp.py --deploy-mode ${DEPLOY} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --master ${MASTER} --num-executors ${N_EXECUTORS} --executor-cores ${EXECUTOR_CORES} &> app_id.txt
+  ${SPARK_SHELL}/spark-shell tmp.py --deploy-mode ${DEPLOY} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --master ${MASTER} --num-executors ${N_EXECUTORS} --executor-cores ${EXECUTOR_CORES} &> app_id.txt
   ## Grabs the spark job application id from the redirected stdout/stderr
   APP_ID=$(cat app_id.txt | grep -m 1 -Po "application_([0-9])+_([0-9])")
   mv app_id.txt spark_outputs/${APP_ID}.txt
@@ -84,14 +81,14 @@ function executeQuery {
 ## Correct usage check
 if [ $# -eq 0 ]
 then
-  echo "Error: usage is [QUERY_ID | -A FOR EXECUTE ALL | -F FOR EXECUTE FROM FILE] ?[FILE_TO_REDIRECT] ?[N_TIMES]"
+  echo "Error: usage is [QUERY_ID | -A FOR EXECUTE ALL] ?[N_TIMES]"
   exit -1;
 fi
-if [ $# -gt 3 ]
+if [ $# -gt 2 ]
 then
-  echo "Warning: only maximum three arguments are supported, the others will be ignored"
+  echo "Warning: only one argument is supported, the others will be ignored"
 fi
-checkargs $1 $2 $3
+checkargs $1 $2
 ##
 ## Queries execution
 if [ $ALL_QUERIES -eq 1 ]
