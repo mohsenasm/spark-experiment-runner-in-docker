@@ -52,6 +52,7 @@ function executeQuery {
   done
   echo ${CONFIGS}
   echo ${PACKAGES}
+  echo $1
 
 
   ## Executes pyspark with stdout/stderr redirect to app_id.txt
@@ -62,7 +63,7 @@ function executeQuery {
     --num-executors ${N_EXECUTORS} \
     --executor-cores ${EXECUTOR_CORES} \
     --driver-cores ${DRIVER_CORES} \
-    --total-executor-cores ${TOT_EXECUTOR_CORES}
+    --total-executor-cores ${TOT_EXECUTOR_CORES} \
     ${CONFIGS} \
     ${PACKAGES} \
     <$1 &> app_id.txt
