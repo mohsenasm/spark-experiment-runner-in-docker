@@ -23,17 +23,15 @@ SPARK_SHELL="/usr/bin"
 #SparkSubmit path
 SPARK_HOME="/usr/hdp/current/spark-client"
 #SparkSubmit opts
-MASTER="yarn"
-DEPLOY="client"
-N_EXECUTORS=4
-MEMORY_EXECUTOR="1024m"
-#Number of cores per executor. (Default: 1 in YARN mode,
-#or all available cores on the worker in standalone mode)
-EXECUTOR_CORES=2
-DRIVER_CORES=1
-DRIVER_MEM="1024m"
-#Total cores for all executors.
-TOT_EXECUTOR_CORES=2
+SPARK_OPS=(
+  "--master yarn",
+  "--deploy client",
+  "--num-executors 4",
+  "--executor-cores 4",
+  "--executor-memory 1024m",
+  "--driver-memory 1024m",
+  "--total-executor-cores 4"
+)
 #Additional spark configurations
 CONFIGURATIONS=()
 #Additional spark packages

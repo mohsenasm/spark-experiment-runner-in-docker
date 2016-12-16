@@ -28,11 +28,19 @@ function isNumber {
      exit 1
   fi
 }
+function concatOpts {
+  OPTS=""
+  for opt in ${SPARK_OPS}
+  do
+    OPTS=${OPTS}opt" "
+  done
+  echo ${OPTS}
+}
 function concatConfs {
   CONFIGS=""
   for config in ${CONFIGURATIONS}
   do
-    CONFIGS=${CONFIGS}" --conf "$config
+    CONFIGS=${CONFIGS}"--conf "$config" "
   done
   echo ${CONFIGS}
 }
@@ -82,14 +90,8 @@ function executeQuery {
   cat ./queryPreamble.py >> tmp.py
   cat ./queries/query$1.py >> tmp.py
   ## Executes spark-submit with stdout/stderr redirect to app_id.txt
-  ${SPARK_HOME}/bin/spark-submit --master ${MASTER} \
-  --deploy-mode ${DEPLOY} \
-  --executor-memory ${MEMORY_EXECUTOR} \
-  --driver-memory ${DRIVER_MEM} \
-  --num-executors ${N_EXECUTORS} \
-  --executor-cores ${EXECUTOR_CORES} \
-  --driver-cores ${DRIVER_CORES} \
-  --total-executor-cores ${TOT_EXECUTOR_CORES} \
+  ${SPARK_HOME}/bin/spark-submit
+  $(concatOpts) \
   $(concatConfs) \
   $(concatPackages) \
   tmp.py &> app_id.txt

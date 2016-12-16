@@ -27,6 +27,14 @@ function isNumber {
      echo "Error: Scale factor in config file or Repetition factor is not an integer number" >&2; exit 1
   fi
 }
+function concatOpts {
+  OPTS=""
+  for opt in ${SPARK_OPS}
+  do
+    OPTS=${OPTS}opt" "
+  done
+  echo ${OPTS}
+}
 function concatConfs {
   CONFIGS=""
   for config in ${CONFIGURATIONS}
@@ -81,14 +89,8 @@ function executeQuery {
   cat ./queryPreamble.py >> tmp.py
   cat ./queries/query$1.py >> tmp.py
   ## Executes pyspark with stdout/stderr redirect to app_id.txt
-  ${PYSPARK}/pyspark tmp.py
-  --deploy-mode ${DEPLOY} \
-  --executor-memory ${MEMORY_EXECUTOR} \
-  --driver-memory ${DRIVER_MEM} \
-  --num-executors ${N_EXECUTORS} \
-  --executor-cores ${EXECUTOR_CORES} \
-  --driver-cores ${DRIVER_CORES} \
-  --total-executor-cores ${TOT_EXECUTOR_CORES} \
+  ${PYSPARK}/pyspark tmp.py \
+  $(concatOpts) \
   $(concatConfs) \
   $(concatPackages) \
   tmp.py &> app_id.txt
