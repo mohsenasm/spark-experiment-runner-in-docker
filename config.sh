@@ -42,3 +42,5 @@ ALLOWEDIDS=(19 20 21 26 40 52 55 "-A")
 HISTORY_SERVER_IP="localhost"
 #Waiting for download log
 WAIT_LOG="20s"
+#Regex for fetching id of a spark application from spark output
+FETCH_REGEX="application_([0-9]+)_([0-9]+)"
