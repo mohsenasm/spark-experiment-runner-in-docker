@@ -44,11 +44,11 @@ function executeQuery {
   PACKAGES=""
   for config in ${CONFIGURATIONS}
   do
-    CONFIGS=CONFIGS" --conf "$config
+    CONFIGS=${CONFIGS}" --conf "$config
   done
   for package in ${SPARK_PACKAGES}
   do
-    PACKAGES=PACKAGES" --packages "$package
+    PACKAGES=${PACKAGES}" --packages "$package
   done
   echo ${CONFIGS}
   echo ${PACKAGES}
