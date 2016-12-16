@@ -31,7 +31,7 @@ function concatOpts {
   OPTS=""
   for opt in ${SPARK_OPS}
   do
-    OPTS=${OPTS}opt" "
+    OPTS=${OPTS}$opt" "
   done
   echo ${OPTS}
 }
