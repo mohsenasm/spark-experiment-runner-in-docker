@@ -25,6 +25,22 @@ function isNumber {
      echo "Error: Scale factor in config file or Repetition factor is not an integer number" >&2; exit 1
   fi
 }
+function concatConfs {
+  CONFIGS=""
+  for config in ${CONFIGURATIONS}
+  do
+    CONFIGS=${CONFIGS}" --conf "$config
+  done
+  echo ${CONFIGS}
+}
+function concatPackages {
+  PACKAGES=""
+  for package in ${SPARK_PACKAGES}
+  do
+    PACKAGES=${PACKAGES}" --packages "$package
+  done
+  echo ${PACKAGES}
+}
 ## Checks arguments validity
 function checkargs {
   if [ ! -f $1 ]
@@ -40,19 +56,8 @@ function checkargs {
 }
 ## Executes the query
 function executeQuery {
-  CONFIGS=""
-  PACKAGES=""
-  for config in ${CONFIGURATIONS}
-  do
-    CONFIGS=${CONFIGS}" --conf "$config
-  done
-  for package in ${SPARK_PACKAGES}
-  do
-    PACKAGES=${PACKAGES}" --packages "$package
-  done
-  echo ${CONFIGS}
-  echo ${PACKAGES}
-  echo $1
+  echo $(concatConfs)
+  echo $(concatPackages)
 
 
   ## Executes pyspark with stdout/stderr redirect to app_id.txt
