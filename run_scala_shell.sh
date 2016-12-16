@@ -69,7 +69,7 @@ function executeQuery {
     $(concatOpts) \
     $(concatConfs) \
     $(concatPackages) \
-    <$1 2>app_id.txt
+    <$1 1>output.txt 2>app_id.txt
   ## Grabs the spark job application id from the redirected stdout/stderr
   APP_ID=$(cat app_id.txt | grep -m 1 -Po ${FETCH_REGEX})
   mv app_id.txt spark_outputs/${APP_ID}.txt
