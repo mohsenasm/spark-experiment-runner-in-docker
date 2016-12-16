@@ -18,18 +18,23 @@
 export SCALE=2
 #PySpark path
 PYSPARK="/usr/bin"
+#spark-shell path
+SPARK_SHELL="/usr/bin"
 #SparkSubmit path
 SPARK_HOME="/usr/hdp/current/spark-client"
 #SparkSubmit opts
-MASTER="yarn"
-DEPLOY="client"
-N_EXECUTORS=4
-MEMORY_EXECUTOR="1024m"
-EXECUTOR_CORES=2
-DRIVER_MEM="1024m"
+SPARK_OPS=(
+  "--master yarn"
+)
+#Additional spark configurations
+CONFIGURATIONS=("spark.cassandra.connection.host=10.0.0.4")
+#Additional spark packages
+SPARK_PACKAGES=("datastax:spark-cassandra-connector:1.6.0-s_2.10")
 #Available queries id + -A to indicate that all queries must be executed
 ALLOWEDIDS=(19 20 21 26 40 52 55 "-A")
 #Spark History server ip
 HISTORY_SERVER_IP="localhost"
 #Waiting for download log
 WAIT_LOG="20s"
+#Regex for fetching id of a spark application from spark output
+FETCH_REGEX="application_([0-9]+)_([0-9]+)"

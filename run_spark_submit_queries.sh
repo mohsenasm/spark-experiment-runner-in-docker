@@ -24,8 +24,33 @@ APP_ID=""
 function isNumber {
   re='^[0-9]+$'
   if ! [[ $1 =~ $re ]] ; then
-     echo "Error: Scale factor in config file or Repetition factor is not an integer number" >&2; exit 1
+     echo "Error: Scale factor in config file or Repetition factor is not an integer number" >&2;
+     exit 1
   fi
+}
+function concatOpts {
+  OPTS=""
+  for opt in ${SPARK_OPS}
+  do
+    OPTS=${OPTS}$opt" "
+  done
+  echo ${OPTS}
+}
+function concatConfs {
+  CONFIGS=""
+  for config in ${CONFIGURATIONS}
+  do
+    CONFIGS=${CONFIGS}"--conf "$config" "
+  done
+  echo ${CONFIGS}
+}
+function concatPackages {
+  PACKAGES=""
+  for package in ${SPARK_PACKAGES}
+  do
+    PACKAGES=${PACKAGES}" --packages "$package" "
+  done
+  echo ${PACKAGES}
 }
 ## Checks if the passed parameter exists in ALLOWEDIDS, sets some variables
 ## To perform the execution of all queries or of a sigle query multiple time
@@ -64,10 +89,14 @@ function executeQuery {
   ## Generates a file that puts together the query preamble + the query body
   cat ./queryPreamble.py >> tmp.py
   cat ./queries/query$1.py >> tmp.py
-  ## Executes pyspark with stdout/stderr redirect to app_id.txt
-  ${PYSPARK}/pyspark tmp.py --deploy-mode ${DEPLOY} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --master ${MASTER} --num-executors ${N_EXECUTORS} --executor-cores ${EXECUTOR_CORES} &> app_id.txt
+  ## Executes spark-submit with stdout/stderr redirect to app_id.txt
+  ${SPARK_HOME}/bin/spark-submit
+  $(concatOpts) \
+  $(concatConfs) \
+  $(concatPackages) \
+  tmp.py 2> app_id.txt
   ## Grabs the spark job application id from the redirected stdout/stderr
-  APP_ID=$(cat app_id.txt | grep -m 1 -Po "application_([0-9])+_([0-9])")
+  APP_ID=$(cat app_id.txt | grep -m 1 -Po ${FETCH_REGEX})
   mv app_id.txt spark_outputs/${APP_ID}.txt
   echo "EXECUTION FINISHED"
   echo "APP ID: ${APP_ID}"
@@ -84,9 +113,9 @@ then
   echo "Error: usage is [QUERY_ID | -A FOR EXECUTE ALL] ?[N_TIMES]"
   exit -1;
 fi
-if [ $# -gt 2 ]
+if [ "$#" -gt 2 ]
 then
-  echo "Warning: only one argument is supported, the others will be ignored"
+  echo "Warning: only maximum two arguments is supported, the others will be ignored"
 fi
 checkargs $1 $2
 ##
