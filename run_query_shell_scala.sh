@@ -61,6 +61,8 @@ function executeQuery {
     --master ${MASTER} \
     --num-executors ${N_EXECUTORS} \
     --executor-cores ${EXECUTOR_CORES} \
+    --driver-cores ${DRIVER_CORES} \
+    --total-executor-cores ${TOT_EXECUTOR_CORES}
     ${CONFIGS} \
     ${PACKAGES} \
     <$1 1> app_id.txt
