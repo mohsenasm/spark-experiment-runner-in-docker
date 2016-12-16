@@ -55,7 +55,7 @@ function executeQuery {
 
 
   ## Executes pyspark with stdout/stderr redirect to app_id.txt
-  ${SPARK_SHELL}/spark-shell tmp.py --deploy-mode ${DEPLOY} \
+  ${SPARK_SHELL}/spark-shell --deploy-mode ${DEPLOY} \
     --executor-memory ${MEMORY_EXECUTOR} \
     --driver-memory ${DRIVER_MEM} \
     --master ${MASTER} \
