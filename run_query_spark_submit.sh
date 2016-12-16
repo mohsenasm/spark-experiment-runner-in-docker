@@ -24,7 +24,8 @@ APP_ID=""
 function isNumber {
   re='^[0-9]+$'
   if ! [[ $1 =~ $re ]] ; then
-     echo "Error: Scale factor in config file or Repetition factor is not an integer number" >&2; exit 1
+     echo "Error: Scale factor in config file or Repetition factor is not an integer number" >&2;
+     exit 1
   fi
 }
 ## Checks if the passed parameter exists in ALLOWEDIDS, sets some variables

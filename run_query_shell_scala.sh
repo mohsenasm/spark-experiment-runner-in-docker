@@ -15,8 +15,6 @@
 ## limitations under the License.
 
 source ./config.sh
-LENGTH=${#ALLOWEDIDS[@]}
-ALL_QUERIES=0
 REPETITIONS_N=1
 APP_ID=""
 
@@ -27,45 +25,45 @@ function isNumber {
      echo "Error: Scale factor in config file or Repetition factor is not an integer number" >&2; exit 1
   fi
 }
-## Checks if the passed parameter exists in ALLOWEDIDS, sets some variables
-## To perform the execution of all queries or of a sigle query multiple time
+## Checks arguments validity
 function checkargs {
-  RESULT=0
-  for i in "${ALLOWEDIDS[@]}"
-  do
-    if [ $i = $1 ]
-    then
-      RESULT=1
-    fi
-  done
-  if [ $RESULT -eq 0 ]
+  if [ ! -f $1 ]
   then
-    echo "The inserted query id does not match with any existing one"
-    exit -1;
+    echo "Error: the provided file seems not to exist"
+    exit -1
   fi
-  if [ $1 = "-A" ]
+  if ! [ -z $2 ]
   then
-    ALL_QUERIES=1
-  else
-    if ! [ -z $2 ]
-    then
-      isNumber $2
-      REPETITIONS_N=$2
-    fi
+    isNumber $2
+    REPETITIONS_N=$2
   fi
 }
-## Executes a query with the given id
+## Executes the query
 function executeQuery {
-  if [ -f ./tmp.py ]
-  then
-      rm tmp.py
-  fi
-  touch tmp.py
-  ## Generates a file that puts together the query preamble + the query body
-  cat ./queryPreamble.py >> tmp.py
-  cat ./queries/query$1.py >> tmp.py
+  CONFIGS=""
+  PACKAGES=""
+  for config in ${CONFIGURATIONS}
+  do
+    CONFIGS=CONFIGS" --conf "$config
+  done
+  for package in ${SPARK_PACKAGES}
+  do
+    PACKAGES=PACKAGES" --packages "$package
+  done
+  echo ${CONFIGS}
+  echo ${PACKAGES}
+
+
   ## Executes pyspark with stdout/stderr redirect to app_id.txt
-  ${SPARK_SHELL}/spark-shell tmp.py --deploy-mode ${DEPLOY} --executor-memory ${MEMORY_EXECUTOR} --driver-memory ${DRIVER_MEM} --master ${MASTER} --num-executors ${N_EXECUTORS} --executor-cores ${EXECUTOR_CORES} &> app_id.txt
+  ${SPARK_SHELL}/spark-shell tmp.py --deploy-mode ${DEPLOY} \
+    --executor-memory ${MEMORY_EXECUTOR} \
+    --driver-memory ${DRIVER_MEM} \
+    --master ${MASTER} \
+    --num-executors ${N_EXECUTORS} \
+    --executor-cores ${EXECUTOR_CORES} \
+    ${CONFIGS} \
+    ${PACKAGES} \
+    <$1 1> app_id.txt
   ## Grabs the spark job application id from the redirected stdout/stderr
   APP_ID=$(cat app_id.txt | grep -m 1 -Po "application_([0-9])+_([0-9])")
   mv app_id.txt spark_outputs/${APP_ID}.txt
@@ -81,27 +79,16 @@ function executeQuery {
 ## Correct usage check
 if [ $# -eq 0 ]
 then
-  echo "Error: usage is [QUERY_ID | -A FOR EXECUTE ALL] ?[N_TIMES]"
+  echo "Error: usage is [FILE] ?[N_TIMES]"
   exit -1;
 fi
 if [ $# -gt 2 ]
 then
-  echo "Warning: only one argument is supported, the others will be ignored"
+  echo "Warning: only maximum two arguments are supported, the others will be ignored"
 fi
 checkargs $1 $2
-##
-## Queries execution
-if [ $ALL_QUERIES -eq 1 ]
-then
-  for i in $(seq 0 $(expr $LENGTH - 2))
-  do
-    echo "EXECUTING QUERY ${ALLOWEDIDS[$i]}"
-    executeQuery ${ALLOWEDIDS[$i]}
-  done
-else
-  for j in $(seq 1 ${REPETITIONS_N})
-  do
-    echo "EXECUTING QUERY $1, REPETITION $j"
-    executeQuery $1
-  done
-fi
+for j in $(seq 1 ${REPETITIONS_N})
+do
+  echo "EXECUTING SCRIPT, REPETITION $j"
+  executeQuery $1
+done
