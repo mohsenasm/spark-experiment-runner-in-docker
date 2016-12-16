@@ -25,7 +25,7 @@ SPARK_HOME="/usr/hdp/current/spark-client"
 #SparkSubmit opts
 SPARK_OPS=(
   "--master yarn",
-  "--deploy client",
+  "--deploy cluster",
   "--num-executors 4",
   "--executor-cores 4",
   "--executor-memory 1024m",
