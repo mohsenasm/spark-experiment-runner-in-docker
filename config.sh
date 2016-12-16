@@ -35,9 +35,9 @@ DRIVER_MEM="1024m"
 #Total cores for all executors.
 TOT_EXECUTOR_CORES=2
 #Additional spark configurations
-CONFIGURATIONS=("spark.eventLog.enabled=false")
+CONFIGURATIONS=()
 #Additional spark packages
-SPARK_PACKAGES=("datastax:spark-cassandra-connector:1.6.0-s_2.10")
+SPARK_PACKAGES=()
 #Available queries id + -A to indicate that all queries must be executed
 ALLOWEDIDS=(19 20 21 26 40 52 55 "-A")
 #Spark History server ip

@@ -56,9 +56,6 @@ function checkargs {
 }
 ## Executes the query
 function executeQuery {
-  echo $(concatConfs)
-  echo $(concatPackages)
-
 
   ## Executes pyspark with stdout/stderr redirect to app_id.txt
   ${SPARK_SHELL}/spark-shell --deploy-mode ${DEPLOY} \
@@ -69,8 +66,8 @@ function executeQuery {
     --executor-cores ${EXECUTOR_CORES} \
     --driver-cores ${DRIVER_CORES} \
     --total-executor-cores ${TOT_EXECUTOR_CORES} \
-    ${CONFIGS} \
-    ${PACKAGES} \
+    $(concatConfs) \
+    $(concatPackages) \
     <$1 &> app_id.txt
   ## Grabs the spark job application id from the redirected stdout/stderr
   APP_ID=$(cat app_id.txt | grep -m 1 -Po "application_([0-9])+_([0-9])")

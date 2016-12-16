@@ -28,6 +28,22 @@ function isNumber {
      exit 1
   fi
 }
+function concatConfs {
+  CONFIGS=""
+  for config in ${CONFIGURATIONS}
+  do
+    CONFIGS=${CONFIGS}" --conf "$config
+  done
+  echo ${CONFIGS}
+}
+function concatPackages {
+  PACKAGES=""
+  for package in ${SPARK_PACKAGES}
+  do
+    PACKAGES=${PACKAGES}" --packages "$package
+  done
+  echo ${PACKAGES}
+}
 ## Checks if the passed parameter exists in ALLOWEDIDS, sets some variables
 ## To perform the execution of all queries or of a sigle query multiple time
 function checkargs {
@@ -73,7 +89,10 @@ function executeQuery {
   --num-executors ${N_EXECUTORS} \
   --executor-cores ${EXECUTOR_CORES} \
   --driver-cores ${DRIVER_CORES} \
-  --total-executor-cores ${TOT_EXECUTOR_CORES} tmp.py &> app_id.txt
+  --total-executor-cores ${TOT_EXECUTOR_CORES} \
+  $(concatConfs) \
+  $(concatPackages) \
+  tmp.py &> app_id.txt
   ## Grabs the spark job application id from the redirected stdout/stderr
   APP_ID=$(cat app_id.txt | grep -m 1 -Po "application_([0-9]+)_([0-9]+)")
   mv app_id.txt spark_outputs/${APP_ID}.txt
