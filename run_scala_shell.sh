@@ -29,7 +29,7 @@ function concatConfs {
   CONFIGS=""
   for config in ${CONFIGURATIONS}
   do
-    CONFIGS=${CONFIGS}" --conf "$config
+    CONFIGS=${CONFIGS}"--conf "$config" "
   done
   echo ${CONFIGS}
 }
@@ -37,7 +37,7 @@ function concatPackages {
   PACKAGES=""
   for package in ${SPARK_PACKAGES}
   do
-    PACKAGES=${PACKAGES}" --packages "$package
+    PACKAGES=${PACKAGES}"--packages "$package" "
   done
   echo ${PACKAGES}
 }

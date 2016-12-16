@@ -48,7 +48,7 @@ function concatPackages {
   PACKAGES=""
   for package in ${SPARK_PACKAGES}
   do
-    PACKAGES=${PACKAGES}" --packages "$package
+    PACKAGES=${PACKAGES}" --packages "$package" "
   done
   echo ${PACKAGES}
 }
