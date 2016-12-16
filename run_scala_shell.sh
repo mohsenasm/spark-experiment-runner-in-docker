@@ -25,6 +25,14 @@ function isNumber {
      echo "Error: Scale factor in config file or Repetition factor is not an integer number" >&2; exit 1
   fi
 }
+function concatOpts {
+  OPTS=""
+  for opt in ${SPARK_OPS}
+  do
+    OPTS=${OPTS}opt" "
+  done
+  echo ${OPTS}
+}
 function concatConfs {
   CONFIGS=""
   for config in ${CONFIGURATIONS}
