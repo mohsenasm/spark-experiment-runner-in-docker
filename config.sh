@@ -23,13 +23,12 @@ SPARK_SHELL="/usr/bin"
 #SparkSubmit path
 SPARK_HOME="/usr/hdp/current/spark-client"
 #SparkSubmit opts
-SPARK_OPS=(
-  "--master yarn"
-)
-#Additional spark configurations
-CONFIGURATIONS=()
-#Additional spark packages
-SPARK_PACKAGES=()
+#Example
+#--master yarn --num-executors 3 --executor-memory 1g --driver-memory 1g
+#--executor-cores 4 --deploy-mode client
+#
+#All this options must be put in a single string
+SPARK_OPS="--master yarn"
 #Available queries id + -A to indicate that all queries must be executed
 ALLOWEDIDS=(19 20 21 26 40 52 55 "-A")
 #Spark History server ip

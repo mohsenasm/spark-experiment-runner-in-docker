@@ -27,30 +27,6 @@ function isNumber {
      echo "Error: Scale factor in config file or Repetition factor is not an integer number" >&2; exit 1
   fi
 }
-function concatOpts {
-  OPTS=""
-  for opt in ${SPARK_OPS}
-  do
-    OPTS=${OPTS}$opt" "
-  done
-  echo ${OPTS}
-}
-function concatConfs {
-  CONFIGS=""
-  for config in ${CONFIGURATIONS}
-  do
-    CONFIGS=${CONFIGS}"--conf "$config" "
-  done
-  echo ${CONFIGS}
-}
-function concatPackages {
-  PACKAGES=""
-  for package in ${SPARK_PACKAGES}
-  do
-    PACKAGES=${PACKAGES}"--packages "$package" "
-  done
-  echo ${PACKAGES}
-}
 ## Checks if the passed parameter exists in ALLOWEDIDS, sets some variables
 ## To perform the execution of all queries or of a sigle query multiple time
 function checkargs {
@@ -90,9 +66,7 @@ function executeQuery {
   cat ./queries/query$1.py >> tmp.py
   ## Executes pyspark with stdout/stderr redirect to app_id.txt
   ${PYSPARK}/pyspark tmp.py \
-  $(concatOpts) \
-  $(concatConfs) \
-  $(concatPackages) \
+  ${SPARK_OPS}\
   tmp.py 1>tmp_output.txt 2>tmp_stderr.txt
   ## Grabs the spark job application id from the redirected stdout/stderr
   APP_ID=$(cat tmp_stderr.txt | grep -m 1 -Po ${FETCH_REGEX})
