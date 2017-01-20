@@ -37,8 +37,8 @@ SPARK_OPTS='--master yarn'
 # Use Spark REST API
 REST_API=yes
 
-# Spark History server IP
-HISTORY_SERVER_IP=localhost
+# Spark History server address
+HISTORY_SERVER=localhost
 
 # Spark logs directory on HDFS
 SPARK_LOGS=

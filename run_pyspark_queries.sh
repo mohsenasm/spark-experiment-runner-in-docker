@@ -52,7 +52,7 @@ execute ()
     echo Downloading logs
     outfile="$job/logs/eventLogs-${app_id}"
     if [ "x$REST_API" = xyes ]; then
-        "$DIR"/log_download.sh -s "$HISTORY_SERVER_IP" \
+        "$DIR"/log_download.sh -s "$HISTORY_SERVER" \
               -o "$outfile".zip "$app_id"
     else
         hadoop fs -copyToLocal "${SPARK_LOGS}/$app_id" "$outfile".json
