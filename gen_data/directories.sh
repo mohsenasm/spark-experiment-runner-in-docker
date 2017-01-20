@@ -1,6 +1,6 @@
 #!/bin/sh
 
-## Copyright 2015 Eugenio Gianniti
+## Copyright 2015-2017 Eugenio Gianniti <eugenio.gianniti@polimi.it>
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 [ "x$(whoami)" = "xhdfs" ] || exec sudo -u hdfs sh "$0"
 
-hdfs dfs -mkdir /tmp/ubuntu
-hdfs dfs -chmod 777 /tmp/ubuntu
-hdfs dfs -chown ubuntu:hdfs /tmp/ubuntu
+hadoop fs -mkdir /tmp/tpcds-generate
+hadoop fs -chmod 777 /tmp/tpcds-generate
+hadoop fs -chown ubuntu:hdfs /tmp/tpcds-generate
 
-hdfs dfs -mkdir /user/ubuntu
-hdfs dfs -chmod 755 /user/ubuntu
-hdfs dfs -chown ubuntu:hdfs /user/ubuntu
+hadoop fs -mkdir /user/ubuntu
+hadoop fs -chmod 755 /user/ubuntu
+hadoop fs -chown ubuntu:hdfs /user/ubuntu
