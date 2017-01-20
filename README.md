@@ -1,5 +1,8 @@
 # Spark Experiment Runner
 
+All the code contained in this repo is licensed under the [Apache
+License, version 2](https://www.apache.org/licenses/LICENSE-2.0).
+
 This repo supposes you have Hadoop, Spark, Hive, HDFS and YARN correctly
 installed and configured.
 Most of the shell scripts in this repo are Bourne shell compliant.
