@@ -1,5 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
+## Copyright 2017 Eugenio Gianniti <eugenio.gianniti@polimi.it>
 ## Copyright 2016 Giorgio Pea <giorgio.pea@mail.polimi.it>
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,97 +15,57 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-source ./config.sh
-LENGTH=${#ALLOWEDIDS[@]}
-ALL_QUERIES=0
-REPETITIONS_N=1
-APP_ID=""
+SOURCE="$0"
+while [ -L "$SOURCE" ]; do
+    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    SOURCE="$(readlink "$SOURCE")"
+    [ "$SOURCE" != /* ] && SOURCE="$DIR/$SOURCE"
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-## Checks if the passed parameter is a number, if not exits the process
-function isNumber {
-  re='^[0-9]+$'
-  if ! [[ $1 =~ $re ]] ; then
-     echo "Error: Scale factor in config file or Repetition factor is not an integer number" >&2; exit 1
-  fi
-}
-## Checks if the passed parameter exists in ALLOWEDIDS, sets some variables
-## To perform the execution of all queries or of a sigle query multiple time
-function checkargs {
-  RESULT=0
-  for i in "${ALLOWEDIDS[@]}"
-  do
-    if [ $i = $1 ]
-    then
-      RESULT=1
+. "$DIR"/config.sh
+
+## Execute a job with the given name
+execute ()
+{
+    job="$1"
+    mkdir -p "$job"/{spark_stdout,spark_stderr,logs}
+
+    tempfile="$job/tmp.py"
+    trap 'rm -f '"$tempfile" 0 INT TERM
+    sed -e "s#@@JOB@@#$job#g" -e "s#@@DB@@#$DB_NAME#g" \
+        < "$DIR"/preamble.py > "$tempfile"
+    echo 'sqlContext.sql("""' >> "$tempfile"
+    cat "$DIR/queries/${job}.sql" >> "$tempfile"
+    echo '""").show()' >> "$tempfile"
+
+    "$PYSPARK" $SPARK_OPTS "$tempfile" > tmp_output.txt 2> tmp_stderr.txt
+    app_id="$(grep -m 1 -o -E $FETCH_REGEX tmp_stderr.txt)"
+    mv tmp_output.txt "$job/spark_stdout/${app_id}.txt"
+    mv tmp_stderr.txt "$job/spark_stderr/${app_id}.txt"
+    rm "$tempfile"
+
+    echo Execution finished
+    echo Application ID: $app_id
+
+    sleep $WAIT_LOG
+    echo Downloading logs
+    outfile="$job/logs/eventLogs-${app_id}"
+    if [ "x$REST_API" = xyes ]; then
+        "$DIR"/log_download.sh -s "$HISTORY_SERVER_IP" \
+              -o "$outfile".zip "$app_id"
+    else
+        hadoop fs -copyToLocal "${SPARK_LOGS}/$app_id" "$outfile".json
     fi
-  done
-  if [ $RESULT -eq 0 ]
-  then
-    echo "The inserted query id does not match with any existing one"
-    exit -1;
-  fi
-  if [ $1 = "-A" ]
-  then
-    ALL_QUERIES=1
-  else
-    if ! [ -z $2 ]
-    then
-      isNumber $2
-      REPETITIONS_N=$2
-    fi
-  fi
 }
-## Executes a query with the given id
-function executeQuery {
-  if [ -f ./tmp.py ]
-  then
-      rm tmp.py
-  fi
-  touch tmp.py
-  ## Generates a file that puts together the query preamble + the query body
-  cat ./queryPreamble.py >> tmp.py
-  cat ./queries/query$1.py >> tmp.py
-  ## Executes pyspark with stdout/stderr redirect to app_id.txt
-  ${PYSPARK}/pyspark tmp.py \
-  ${SPARK_OPS}\
-  tmp.py 1>tmp_output.txt 2>tmp_stderr.txt
-  ## Grabs the spark job application id from the redirected stdout/stderr
-  APP_ID=$(cat tmp_stderr.txt | grep -m 1 -Po ${FETCH_REGEX})
-  mv tmp_output.txt spark_outputs/${APP_ID}.txt
-  mv tmp_stderr.txt spark_stderr/${APP_ID}.txt
-  echo "EXECUTION FINISHED"
-  echo "APP ID: ${APP_ID}"
-  sleep ${WAIT_LOG}
-  echo "DOWNLOADING LOGS"
-  ## Executes log dowload
-  ./logDownload.sh -s ${HISTORY_SERVER_IP} ${APP_ID}
-  echo "DOWNLOAD COMPLETED"
-}
-## Entry Point
-## Correct usage check
-if [ $# -eq 0 ]
-then
-  echo "Error: usage is [QUERY_ID | -A FOR EXECUTE ALL] ?[N_TIMES]"
-  exit -1;
+
+if [ $# -gt 0 ]; then
+    echo warning: no argument expected, they will be ignored >&2
 fi
-if [ $# -gt 2 ]
-then
-  echo "Warning: only one argument is supported, the others will be ignored"
-fi
-checkargs $1 $2
-##
-## Queries execution
-if [ $ALL_QUERIES -eq 1 ]
-then
-  for i in $(seq 0 $(expr $LENGTH - 2))
-  do
-    echo "EXECUTING QUERY ${ALLOWEDIDS[$i]}"
-    executeQuery ${ALLOWEDIDS[$i]}
-  done
-else
-  for j in $(seq 1 ${REPETITIONS_N})
-  do
-    echo "EXECUTING QUERY $1, REPETITION $j"
-    executeQuery $1
-  done
-fi
+
+for it in $(seq $REPETITIONS); do
+    echo Iteration $it
+    for job in $JOBS; do
+        execute "$job"
+    done
+done

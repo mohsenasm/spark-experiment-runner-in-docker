@@ -1,7 +1,8 @@
 #!/bin/sh
 
+## Copyright 2017 Eugenio Gianniti <eugenio.gianniti@polimi.it>
 ## Copyright 2016 Giorgio Pea <giorgio.pea@mail.polimi.it>
-## From a work of Eugenio Gianniti <https://github.com/eg123-gh>
+## From a work of Eugenio Gianniti
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -17,21 +18,24 @@
 
 error_aux ()
 {
-    echo "$0: $1: $2" >&2
+    echo $0: $1: "${@:2}" >&2
     exit 1
 }
 alias error='error_aux $LINENO '
 
-while getopts :s: opt; do
+while getopts :s:o: opt; do
     case "$opt" in
         s)
             ip="$OPTARG"
             ;;
+        o)
+            outfile="$OPTARG"
+            ;;
         \?)
-            error "unrecognized option -$OPTARG"
+            error unrecognized option -$OPTARG
             ;;
         :)
-            error "-$OPTARG option requires an argument"
+            error -$OPTARG option requires an argument
             ;;
     esac
 done
@@ -39,7 +43,7 @@ shift $(expr $OPTIND - 1)
 
 
 if [ "x$ip" = x ]; then
-    error "you should provide the address of the History Server with the -s option"
+    error you should provide the address of the History Server with the -s option
 fi
 
 if echo "$ip" | grep -qv //; then
@@ -54,6 +58,5 @@ fi
 
 for appId in "$@"; do
     endpoint="${server}/api/v1/applications/${appId}/logs"
-    outfile="./logs/eventLogs-${appId}.zip"
-    curl -# "$endpoint" -o "$outfile"
+    curl -# ${outfile+-o "$outfile"} "$endpoint"
 done

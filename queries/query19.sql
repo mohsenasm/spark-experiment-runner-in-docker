@@ -1,6 +1,6 @@
 --To be run 10 times
 select  i_brand_id brand_id, i_brand brand, i_manufact_id, i_manufact,
- 	sum(ss_ext_sales_price) ext_price
+        sum(ss_ext_sales_price) ext_price
  from date_dim, store_sales, item,customer,customer_address,store
  where date_dim.d_date_sk = store_sales.ss_sold_date_sk
    and store_sales.ss_item_sk = item.i_item_sk
@@ -20,4 +20,4 @@ select  i_brand_id brand_id, i_brand brand, i_manufact_id, i_manufact,
          ,i_brand_id
          ,i_manufact_id
          ,i_manufact
-limit 100 ;
+limit 100

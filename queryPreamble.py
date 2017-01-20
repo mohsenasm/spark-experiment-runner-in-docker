@@ -1,2 +1,0 @@
-from pyspark import SparkContextfrom pyspark.sql import HiveContextimport ossc = SparkContext(appName="HiveQuery")
-hive_context = HiveContext(sc)#Gets scale factor from config.sh, defaults to 2scale= os.getenv("SCALE",2)hive_context.sql("tpcds_text_"+scale)
