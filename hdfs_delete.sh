@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ## Copyright 2016 Giorgio Pea <giorgio.pea@mail.polimi.it>
 ##
@@ -13,10 +13,11 @@
 ## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
-if [ $# -ne 1 ]
-then
-  echo "Error: usage is [TPCDS_DATASET_SCALE]"
-  exit -1;
+
+if [ $# -ne 1 ]; then
+    echo "error: provide the scale factor as argument" >&2
+    exit -1
 fi
-echo "STARTING DELETING /tmp/tpcds-generate/"$1
-hdfs dfs -rm  -R -skipTrash /tmp/tpcds-generate/$1
+
+echo "Deleting /tmp/tpcds-generate/$1"
+hadoop fs -rm -R -f -skipTrash "/tmp/tpcds-generate/$1"
