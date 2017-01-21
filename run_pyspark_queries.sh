@@ -29,33 +29,41 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 execute ()
 {
     job="$1"
-    mkdir -p "$job"/{spark_stdout,spark_stderr,logs}
+    sqlfile="$DIR/queries/${job}.sql"
 
-    tempfile="$job/tmp.py"
-    trap 'rm -f '"$tempfile" 0 INT TERM
-    sed -e "s#@@JOB@@#$job#g" -e "s#@@DB@@#$DB_NAME#g" \
-        < "$DIR"/preamble.py > "$tempfile"
-    echo 'sqlContext.sql("""' >> "$tempfile"
-    cat "$DIR/queries/${job}.sql" >> "$tempfile"
-    echo '""").show()' >> "$tempfile"
+    if [ -r "$sqlfile" ]; then
+        mkdir -p {spark_stdout,spark_stderr,logs}/"$job"
 
-    "$PYSPARK" $SPARK_OPTS "$tempfile" > tmp_output.txt 2> tmp_stderr.txt
-    app_id="$(grep -m 1 -o -E $FETCH_REGEX tmp_stderr.txt)"
-    mv tmp_output.txt "$job/spark_stdout/${app_id}.txt"
-    mv tmp_stderr.txt "$job/spark_stderr/${app_id}.txt"
-    rm "$tempfile"
+        tempfile="${job}_tmp.py"
+        trap "rm -f \'$tempfile\'" 0 INT TERM
 
-    echo Execution finished
-    echo Application ID: $app_id
+        sed -e "s#@@JOB@@#$job#g" -e "s#@@DB@@#$DB_NAME#g" \
+            < "$DIR"/preamble.py > "$tempfile"
+        echo 'sqlContext.sql("""' >> "$tempfile"
+        cat "$sqlfile" >> "$tempfile"
+        echo '""").show()' >> "$tempfile"
 
-    sleep $WAIT_LOG
-    echo Downloading logs
-    outfile="$job/logs/eventLogs-${app_id}"
-    if [ "x$REST_API" = xyes ]; then
-        "$DIR"/log_download.sh -s "$HISTORY_SERVER" \
-              -o "$outfile".zip "$app_id"
+        "$PYSPARK" $SPARK_OPTS "$tempfile" > tmp_output.txt 2> tmp_stderr.txt
+        app_id="$(grep -m 1 -o -E "$FETCH_REGEX" tmp_stderr.txt)"
+        mv tmp_output.txt "spark_stdout/$job/${app_id}.txt"
+        mv tmp_stderr.txt "spark_stderr/$job/${app_id}.txt"
+        rm "$tempfile"
+
+        echo Execution finished
+        echo Application ID: $app_id
+
+        sleep $WAIT_LOG
+        echo Downloading logs
+        outfile="logs/$job/eventLogs-${app_id}"
+        if [ "x$REST_API" = xyes ]; then
+            "$DIR"/log_download.sh -s "$HISTORY_SERVER" \
+                  -o "$outfile".zip "$app_id"
+        else
+            hadoop fs -copyToLocal "${SPARK_LOGS}/$app_id" "$outfile"
+        fi
     else
-        hadoop fs -copyToLocal "${SPARK_LOGS}/$app_id" "$outfile".json
+        echo warning: you are trying to execute \'$job\', but \'$sqlfile\' \
+             does not exist! >&2
     fi
 }
 
@@ -66,6 +74,7 @@ fi
 for it in $(seq $REPETITIONS); do
     echo Iteration $it
     for job in $JOBS; do
+        echo Executing $job
         execute "$job"
     done
 done
