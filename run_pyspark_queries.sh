@@ -35,7 +35,7 @@ execute ()
         mkdir -p {spark_stdout,spark_stderr,logs}/"$job"
 
         tempfile="${job}_tmp.py"
-        trap "rm -f \'$tempfile\'" 0 INT TERM
+        trap "rm -f \'$tempfile\'; exit -1" INT TERM
 
         sed -e "s#@@JOB@@#$job#g" -e "s#@@DB@@#$DB_NAME#g" \
             < "$DIR"/preamble.py > "$tempfile"
