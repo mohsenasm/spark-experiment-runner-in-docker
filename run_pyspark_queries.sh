@@ -32,7 +32,9 @@ execute ()
     sqlfile="$DIR/queries/${job}.sql"
 
     if [ -r "$sqlfile" ]; then
-        mkdir -p {spark_stdout,spark_stderr,logs}/"$job"
+        mkdir -p spark_stdout/"$job"
+        mkdir -p spark_stderr/"$job"
+        mkdir -p logs/"$job"
 
         tempfile="${job}_tmp.py"
         trap "rm -f \'$tempfile\'; exit -1" INT TERM
