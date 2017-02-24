@@ -46,7 +46,7 @@ execute ()
         echo '""").show()' >> "$tempfile"
 
         "$PYSPARK" $SPARK_OPTS "$tempfile" > tmp_output.txt 2> tmp_stderr.txt
-        app_id="$(grep -m 1 -o -E "$FETCH_REGEX" tmp_stderr.txt)"
+        app_id="$(grep -m 1 -o -P "$FETCH_REGEX" tmp_stderr.txt)"
         mv tmp_output.txt "spark_stdout/$job/${app_id}.txt"
         mv tmp_stderr.txt "spark_stderr/$job/${app_id}.txt"
         rm "$tempfile"
