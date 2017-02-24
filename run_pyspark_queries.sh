@@ -56,12 +56,12 @@ execute ()
 
         sleep $WAIT_LOG
         echo Downloading logs
-        outfile="logs/$job/eventLogs-${app_id}"
+        outdir="logs/$job"
         if [ "x$REST_API" = xyes ]; then
             "$DIR"/log_download.sh -s "$HISTORY_SERVER" \
-                  -o "$outfile".zip "$app_id"
+                  -o "$outdir/eventLogs-$app_id".zip "$app_id"
         else
-            hadoop fs -copyToLocal "${SPARK_LOGS}/$app_id" "$outfile"
+            hadoop fs -copyToLocal "${SPARK_LOGS}/$app_id" "$outdir"
         fi
     else
         echo warning: you are trying to execute \'$job\', but \'$sqlfile\' \
