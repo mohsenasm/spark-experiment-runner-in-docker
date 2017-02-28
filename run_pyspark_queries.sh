@@ -32,9 +32,13 @@ execute ()
     sqlfile="$DIR/queries/${job}.sql"
 
     if [ -r "$sqlfile" ]; then
-        mkdir -p spark_stdout/"$job"
-        mkdir -p spark_stderr/"$job"
-        mkdir -p logs/"$job"
+        stdout_dir="$job/spark_stdout"
+        stderr_dir="$job/spark_stderr"
+        logs_dir="$job/logs"
+
+        mkdir -p "$stdout_dir"
+        mkdir -p "$stderr_dir"
+        mkdir -p "$logs_dir"
 
         tempfile="${job}_tmp.py"
         trap "rm -f \'$tempfile\'; exit -1" INT TERM
@@ -47,8 +51,8 @@ execute ()
 
         "$PYSPARK" $SPARK_OPTS "$tempfile" > tmp_output.txt 2> tmp_stderr.txt
         app_id="$(grep -m 1 -o -P "$FETCH_REGEX" tmp_stderr.txt)"
-        mv tmp_output.txt "spark_stdout/$job/${app_id}.txt"
-        mv tmp_stderr.txt "spark_stderr/$job/${app_id}.txt"
+        mv tmp_output.txt "${stdout_dir}/${app_id}.txt"
+        mv tmp_stderr.txt "${stderr_dir}/${app_id}.txt"
         rm "$tempfile"
 
         echo Execution finished
@@ -56,12 +60,11 @@ execute ()
 
         sleep $WAIT_LOG
         echo Downloading logs
-        outdir="logs/$job"
         if [ "x$REST_API" = xyes ]; then
             "$DIR"/log_download.sh -s "$HISTORY_SERVER" \
-                  -o "$outdir/eventLogs-$app_id".zip "$app_id"
+                  -o "${logs_dir}/eventLogs-$app_id".zip "$app_id"
         else
-            hadoop fs -copyToLocal "${SPARK_LOGS}/$app_id" "$outdir"
+            hadoop fs -copyToLocal "${SPARK_LOGS}/$app_id" "$logs_dir"
         fi
     else
         echo warning: you are trying to execute \'$job\', but \'$sqlfile\' \
