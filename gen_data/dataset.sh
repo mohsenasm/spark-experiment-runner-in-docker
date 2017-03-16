@@ -1,6 +1,6 @@
 #!/bin/sh
 
-## Copyright 2015-2016 Eugenio Gianniti
+## Copyright 2015-2017 Eugenio Gianniti
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ SOURCE="$0"
 while [ -L "$SOURCE" ]; do
   DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
   SOURCE="$(readlink "$SOURCE")"
-  [ $SOURCE != /* ] && SOURCE="$DIR/$SOURCE"
+  [ "${SOURCE%${SOURCE#?}}" != / ] && SOURCE="$DIR/$SOURCE"
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
