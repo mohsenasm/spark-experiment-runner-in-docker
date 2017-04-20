@@ -30,6 +30,7 @@ execute ()
 {
     job="$1"
     sqlfile="$DIR/queries/${job}.sql"
+    failures=0
 
     if [ -r "$sqlfile" ]; then
         stdout_dir="$job/spark_stdout"
@@ -51,6 +52,12 @@ execute ()
 
         "$PYSPARK" $SPARK_OPTS "$tempfile" > tmp_output.txt 2> tmp_stderr.txt
         app_id="$(grep -m 1 -o -P "$FETCH_REGEX" tmp_stderr.txt)"
+
+        if [ "x$app_id" = x ]; then
+            failures=$(( $failures + 1 ))
+            app_id="failed_job_$failures"
+        fi
+
         mv tmp_output.txt "${stdout_dir}/${app_id}.txt"
         mv tmp_stderr.txt "${stderr_dir}/${app_id}.txt"
         rm "$tempfile"
