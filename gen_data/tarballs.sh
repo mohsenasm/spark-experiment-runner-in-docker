@@ -14,7 +14,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-[ "x$(whoami)" = "xhdfs" ] || exec sudo -u hdfs sh "$0"
+[ "x$(whoami)" = "xhdfs" ] || [ "x$(whoami)" = "xroot" ] || exec sudo -u hdfs sh "$0"
 
 VERSION=$(ls /usr/hdp | grep -v current)
 HDFS_DIR="/hdp/apps/${VERSION}"
