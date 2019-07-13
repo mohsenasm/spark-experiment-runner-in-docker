@@ -14,7 +14,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-[ "x$(whoami)" = "xhdfs" ] || exec sudo -u hdfs sh "$0"
+[ "x$(whoami)" = "xhdfs" ] || [ "x$(whoami)" = "xroot" ] || exec sudo -u hdfs sh "$0"
 
 hadoop fs -mkdir /tmp/tpcds-generate
 hadoop fs -chmod 777 /tmp/tpcds-generate
