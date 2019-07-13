@@ -25,3 +25,6 @@ and write the HTTP address to the Spark History Server in the
 Otherwise, disable ```REST_API``` and provide the HDFS path
 where the History Server stores its logs via the
 ```SPARK_LOGS``` variable.
+
+## Disclaimer
+This is a work-in-progress project. (WIP)
