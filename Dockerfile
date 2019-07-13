@@ -1,4 +1,4 @@
-From gsoertsz/hadoop-hive-spark
+FROM gsoertsz/hadoop-hive-spark
 
 # install some tools for development
 RUN apt-get update && apt-get install -y nano less git && rm -rf /var/lib/apt/l$
